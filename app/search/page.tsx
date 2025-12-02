@@ -5,16 +5,12 @@ import Navbar from '@/components/Navbar';
 import { searchCards } from '@/lib/services/pokemonService';
 import { PokemonCard } from '@/types/pokemon';
 import { addCommunityRequest, hasUserRequested } from '@/lib/services/communityRequestService';
-import { usePrivy } from '@privy-io/react-auth';
-import { useWallets } from '@privy-io/react-auth/solana';
+import { useAccount } from 'wagmi';
 import { MagnifyingGlass, Spinner, Plus, Check } from '@phosphor-icons/react';
 import Modal from '@/components/Modal';
-import { Connection, Transaction, SystemProgram, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import bs58 from 'bs58';
 
 export default function SearchCards() {
-  const { user, authenticated } = usePrivy();
-  const { wallets } = useWallets();
+  const { address, isConnected } = useAccount();
   const [searchQuery, setSearchQuery] = useState('');
   const [cards, setCards] = useState<PokemonCard[]>([]);
   const [allCards, setAllCards] = useState<PokemonCard[]>([]); // Store all cards
@@ -79,12 +75,11 @@ export default function SearchCards() {
         // Subscribe to real-time updates
         const unsubscribe = onSnapshot(poolsRef, (snapshot) => {
           // Update requestedCards state ONLY for authenticated users
-          if (authenticated && user?.wallet?.address) {
-            const walletAddress = user.wallet.address;
+          if (isConnected && address) {
             const userPools = new Set<string>();
             snapshot.docs.forEach(doc => {
               const data = doc.data();
-              if (data.requestedBy?.includes(walletAddress)) {
+              if (data.requestedBy?.includes(address)) {
                 // Use cardId (the Pokemon card ID) not doc.id (Firestore document ID)
                 userPools.add(data.cardId);
               }
@@ -134,7 +129,7 @@ export default function SearchCards() {
     return () => {
       unsubscribeProm?.then(unsub => unsub?.());
     };
-  }, [authenticated, user?.wallet?.address]);
+  }, [isConnected, address]);
 
   // Apply filters whenever cards, rarity, or price sort changes
   useEffect(() => {
@@ -166,7 +161,7 @@ export default function SearchCards() {
   const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean))).sort();
 
   const handleOpenRequestModal = async (card: PokemonCard) => {
-    if (!authenticated || !user?.wallet?.address) {
+    if (!isConnected || !address) {
       setError('Please connect your wallet to request cards');
       setTimeout(() => setError(''), 3000);
       return;
@@ -183,7 +178,7 @@ export default function SearchCards() {
       if (poolDoc.exists()) {
         const data = poolDoc.data();
         // Check requestedBy field (the actual field in Firestore)
-        if (data.requestedBy?.includes(user.wallet.address)) {
+        if (data.requestedBy?.includes(address)) {
           setError('You have already joined this pool!');
           setTimeout(() => setError(''), 3000);
           return;
@@ -199,68 +194,16 @@ export default function SearchCards() {
   };
 
   const handleConfirmRequest = async () => {
-    if (!selectedCard || !user?.wallet?.address) return;
+    if (!selectedCard || !address) return;
 
     setIsProcessing(true);
     
     try {
-      // Get the Solana wallet from Privy
-      if (!wallets || wallets.length === 0) {
-        throw new Error('No Solana wallet connected!');
-      }
-
-      const wallet = wallets[0];
-      
-      // Treasury wallet address (replace with your actual treasury address)
-      const TREASURY_WALLET = process.env.NEXT_PUBLIC_TREASURY_WALLET || 'HYc6VuwJgrKL1R1fRyeQzbCWRJWVVPLjnAcLz59Ec4FT';
-      
-      // Create connection
-      const connection = new Connection(
-        process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://api.mainnet-beta.solana.com',
-        'confirmed'
-      );
-
-      // Create transfer instruction for 0.01 SOL
-      const transaction = new Transaction().add(
-        SystemProgram.transfer({
-          fromPubkey: new PublicKey(user.wallet.address),
-          toPubkey: new PublicKey(TREASURY_WALLET),
-          lamports: 0.01 * LAMPORTS_PER_SOL, // 0.01 SOL
-        })
-      );
-
-      // Get recent blockhash
-      const { blockhash } = await connection.getLatestBlockhash();
-      transaction.recentBlockhash = blockhash;
-      transaction.feePayer = new PublicKey(user.wallet.address);
-
-      // Serialize the transaction
-      const serialized = transaction.serialize({
-        requireAllSignatures: false,
-        verifySignatures: false,
-      });
-
-      // Sign and send transaction via Privy
-      const res = await wallet.signAndSendTransaction!({
-        chain: 'solana:mainnet',
-        transaction: new Uint8Array(serialized),
-      });
-
-      // Normalize signature to base58
-      const sigBase58 = typeof res.signature === 'string'
-        ? res.signature
-        : bs58.encode(res.signature);
-
-      // Confirm transaction
-      await connection.confirmTransaction(sigBase58, 'confirmed');
-
-      console.log('Payment successful! Signature:', sigBase58);
-
-      // Now add to community requests after successful payment
+      // Add to community requests (free to join)
       const result = await addCommunityRequest(
         selectedCard.id,
         selectedCard,
-        user.wallet.address
+        address
       );
       
       if (result.success) {
@@ -273,7 +216,6 @@ export default function SearchCards() {
       }
     } catch (error) {
       console.error('Error processing request:', error);
-      // User likely rejected the transaction - just close modal silently
       setShowRequestModal(false);
     } finally {
       setIsProcessing(false);
@@ -425,10 +367,9 @@ export default function SearchCards() {
           </div>
         </div>
 
-        {/* Results Grid - Wider Cards */}
+        {/* Results Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
           {filteredCards.map((card) => {
-            // Check all possible price types for market price
             const prices = card.tcgplayer?.prices;
             const price = prices?.holofoil?.market || 
                          prices?.normal?.market || 
@@ -484,7 +425,6 @@ export default function SearchCards() {
                       </span>
                     </div>
 
-                    {/* Add to Community Requests Button */}
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -498,9 +438,7 @@ export default function SearchCards() {
                       } disabled:opacity-50`}
                     >
                       {requestedCards.has(card.id) ? (
-                        <>
-                          <span>Joined</span>
-                        </>
+                        <span>Joined</span>
                       ) : (
                         <>
                           <Plus size={14} weight="bold" />
@@ -515,14 +453,12 @@ export default function SearchCards() {
           })}
         </div>
 
-        {/* No Results - only show after a search has been performed */}
         {!loading && cards.length === 0 && hasSearched && (
           <div className="text-center py-12">
             <p className="text-gray-500">No cards found for "{searchQuery}"</p>
           </div>
         )}
 
-        {/* Loading State */}
         {loading && (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mb-4"></div>
@@ -530,14 +466,13 @@ export default function SearchCards() {
           </div>
         )}
 
-        {/* Request Modal */}
         <Modal 
           isOpen={showRequestModal} 
           onClose={() => setShowRequestModal(false)} 
           onSubmit={handleConfirmRequest}
           title="Join Acquisition Pool"
           subtitle="Once the card is fully acquired, all pool members will be rewarded with a share of the total supply."
-          buttonText="Join Pool for 0.01 SOL"
+          buttonText="Join Pool"
           processingText="Processing..."
           isCreating={isProcessing}
         >

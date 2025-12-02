@@ -9,26 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@meteora-ag/dynamic-bonding-curve-sdk": "^1.4.6",
     "@phosphor-icons/react": "^2.1.10",
-    "@privy-io/expo": "^0.60.3",
-    "@privy-io/react-auth": "^3.8.0",
-    "@solana-program/memo": "^0.10.0",
-    "@solana-program/system": "^0.10.0",
-    "@solana-program/token": "^0.9.0",
-    "@solana/spl-token": "^0.4.14",
-    "@solana/wallet-adapter-base": "^0.9.27",
-    "@solana/wallet-adapter-phantom": "^0.9.28",
-    "@solana/wallet-adapter-react": "^0.15.39",
-    "@solana/web3.js": "^1.98.4",
+    "@rainbow-me/rainbowkit": "^2.2.9",
+    "@tanstack/react-query": "^5.90.11",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^12.6.0",
     "next": "16.0.3",
     "phosphor-react": "^1.4.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
-    "react-devtools-core": "^4.28.5",
-    "ws": "^7.5.10"
+    "viem": "^2.40.3",
+    "wagmi": "^2.19.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

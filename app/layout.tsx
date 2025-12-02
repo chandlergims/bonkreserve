@@ -1,13 +1,16 @@
 'use client';
 
 import "./globals.css";
-import { PrivyProvider } from '@privy-io/react-auth';
+import '@rainbow-me/rainbowkit/styles.css';
 import Footer from '@/components/Footer';
 import HowItWorksModal from '@/components/HowItWorksModal';
-import { toSolanaWalletConnectors } from '@privy-io/react-auth/solana';
-import { WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
-import { useMemo, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Geist, Geist_Mono } from "next/font/google";
+import { getDefaultConfig, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { WagmiProvider } from 'wagmi';
+import { mainnet } from 'wagmi/chains';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -18,9 +21,16 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-function WalletAdapter({ children }: { children: React.ReactNode }) {
-  const wallets = useMemo(() => [], []);
-  const endpoint = useMemo(() => process.env.NEXT_PUBLIC_SOLANA_RPC || '', []);
+const config = getDefaultConfig({
+  appName: 'BNBMON',
+  projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
+  chains: [mainnet],
+  ssr: true,
+});
+
+const queryClient = new QueryClient();
+
+function AppWrapper({ children }: { children: React.ReactNode }) {
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   
   useEffect(() => {
@@ -29,15 +39,13 @@ function WalletAdapter({ children }: { children: React.ReactNode }) {
   }, []);
   
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <WalletProvider wallets={wallets} autoConnect>
-        <HowItWorksModal 
-          isOpen={showHowItWorks} 
-          onClose={() => setShowHowItWorks(false)} 
-        />
-        {children}
-      </WalletProvider>
-    </ConnectionProvider>
+    <>
+      <HowItWorksModal 
+        isOpen={showHowItWorks} 
+        onClose={() => setShowHowItWorks(false)} 
+      />
+      {children}
+    </>
   );
 }
 
@@ -49,37 +57,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>PokeStrategy - Strategic Pokemon Card Acquisition</title>
-        <meta name="description" content="PokeStrategy - Join acquisition pools to strategically acquire Pokemon card supply through coordinated market dominance" />
-        <link rel="icon" href="/Arena (18).png" />
-        <meta property="og:title" content="PokeStrategy - Strategic Pokemon Card Acquisition" />
-        <meta property="og:description" content="Join acquisition pools to strategically acquire Pokemon card supply through coordinated market dominance" />
-        <meta property="og:image" content="/Arena (18).png" />
+        <title>BNBMON - Strategic Pokemon Card Acquisition</title>
+        <meta name="description" content="BNBMON - Join acquisition pools to strategically acquire Pokemon card supply through community-driven coordination" />
+        <link rel="icon" href="/Arena (23).png" />
+        <meta property="og:title" content="BNBMON - Strategic Pokemon Card Acquisition" />
+        <meta property="og:description" content="Join acquisition pools to strategically acquire Pokemon card supply through community-driven coordination" />
+        <meta property="og:image" content="/Arena (23).png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PrivyProvider
-          appId={process.env.NEXT_PUBLIC_PRIVY_APP_ID || ''}
-          config={{
-            appearance: {
-              walletChainType: 'solana-only',
-              walletList: ['phantom']
-            },
-            externalWallets: {
-              solana: {
-                connectors: toSolanaWalletConnectors({
-                  shouldAutoConnect: true,
-                }),
-              },
-            },
-          }}
-        >
-          <WalletAdapter>
-            {children}
-            <Footer />
-          </WalletAdapter>
-        </PrivyProvider>
+        <WagmiProvider config={config}>
+          <QueryClientProvider client={queryClient}>
+            <RainbowKitProvider modalSize="compact">
+              <AppWrapper>
+                {children}
+                <Footer />
+              </AppWrapper>
+            </RainbowKitProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
       </body>
     </html>
   );

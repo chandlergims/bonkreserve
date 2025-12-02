@@ -9,7 +9,6 @@ import { getHoldings, initializeDefaultHoldings } from '@/lib/services/holdingsS
 import Link from 'next/link';
 import Modal from '@/components/Modal';
 import { Copy } from '@phosphor-icons/react';
-import { Connection, PublicKey, LAMPORTS_PER_SOL } from '@solana/web3.js';
 
 export default function Strategy() {
   const [holdings, setHoldings] = useState<CardHolding[]>([]);
@@ -21,7 +20,7 @@ export default function Strategy() {
     profit: 0,
     lastUpdated: new Date().toISOString(),
   });
-  const [treasuryWalletBalance, setTreasuryWalletBalance] = useState<number>(0);
+  const [treasuryWalletBalance, setTreasuryWalletBalance] = useState<number>(0.00);
   const [loading, setLoading] = useState(false);
   const [loadingHoldings, setLoadingHoldings] = useState(false);
   const [loadingCommunity, setLoadingCommunity] = useState(false);
@@ -42,43 +41,24 @@ export default function Strategy() {
     return () => unsubscribe();
   }, []);
 
-  // Fetch treasury wallet balance
-  useEffect(() => {
-    const fetchTreasuryBalance = async () => {
-      try {
-        const treasuryWallet = process.env.NEXT_PUBLIC_TREASURY_WALLET;
-        if (!treasuryWallet) return;
-        
-        const connection = new Connection(
-          process.env.NEXT_PUBLIC_SOLANA_RPC || 'https://api.mainnet-beta.solana.com',
-          'confirmed'
-        );
-        
-        const pubkey = new PublicKey(treasuryWallet);
-        const lamports = await connection.getBalance(pubkey);
-        const solBalance = lamports / LAMPORTS_PER_SOL;
-        setTreasuryWalletBalance(solBalance);
-      } catch (error) {
-        console.error('Error fetching treasury balance:', error);
-      }
-    };
-    
-    fetchTreasuryBalance();
-    // Refresh balance every 30 seconds
-    const interval = setInterval(fetchTreasuryBalance, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
-  // Load holdings from Firebase
+  // Load holdings and BNB balance from Firebase
   useEffect(() => {
     const loadHoldingsFromDB = async () => {
       setLoadingHoldings(true);
       
       try {
-        // Simply fetch holdings from Firebase - no initialization
+        // Fetch holdings from Firebase
         const fetchedHoldings = await getHoldings();
-        
         setHoldings(fetchedHoldings);
+        
+        // Load BNB balance from Firebase
+        const { db } = await import('@/lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const treasuryRef = doc(db, 'treasury', 'balance');
+        const treasuryDoc = await getDoc(treasuryRef);
+        const bnbBalance = treasuryDoc.exists() ? parseFloat(treasuryDoc.data().bnb || '0.00') : 0.00;
+        setTreasuryWalletBalance(bnbBalance);
         
         // Calculate treasury
         const totalInvested = fetchedHoldings.reduce((sum, h) => sum + h.totalInvested, 0);
@@ -88,7 +68,7 @@ export default function Strategy() {
         }, 0);
         
         setTreasury({
-          availableBalance: treasuryWalletBalance,
+          availableBalance: bnbBalance,
           totalInvested,
           totalValue,
           profit: 0, // Will be editable in add page
@@ -102,7 +82,7 @@ export default function Strategy() {
     };
 
     loadHoldingsFromDB();
-  }, [treasuryWalletBalance]);
+  }, []);
 
   const filteredHoldings = holdings.filter(h => {
     if (activeTab === 'all') return true;
@@ -139,9 +119,9 @@ export default function Strategy() {
           <div className="bg-white rounded-lg p-4 border border-gray-200">
             <div className="text-xs font-medium text-gray-500 mb-1">Available Capital</div>
             <div className="text-2xl font-bold text-gray-900">
-              {treasury.availableBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} SOL
+              {treasuryWalletBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} BNB
             </div>
-            <div className="text-xs text-gray-400 mt-1">Treasury wallet balance</div>
+            <div className="text-xs text-gray-400 mt-1">Editable in add page</div>
           </div>
           
           <div className="bg-white rounded-lg p-4 border border-gray-200">

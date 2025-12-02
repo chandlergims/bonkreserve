@@ -36,10 +36,10 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
           <div>
             <h3 className="text-sm font-bold text-gray-900 mb-1.5 flex items-center gap-2">
               <Users size={18} weight="regular" className="text-gray-900" />
-              Join Acquisition Pools
+              Join Acquisition Pools (Free)
             </h3>
             <p>
-              Browse rare Pokemon cards and join acquisition pools for 0.05 SOL per card. Your entry fee funds platform operations and grants you proportional rewards when we achieve supply control.
+              Browse rare Pokemon cards and join acquisition pools at no cost. Free participation grants you proportional rewards when we successfully acquire and control card supply.
             </p>
           </div>
 
@@ -50,18 +50,18 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
               Strategic Acquisition
             </h3>
             <p>
-              Once a pool reaches 50 participants, it becomes an Active Target. We systematically acquire 80-90% of the card's supply using treasury funds, creating market dominance and value appreciation.
+              Once a pool reaches 50 participants, it becomes an Active Target. We systematically acquire cards using BNB treasury funds, creating market positioning and value for all participants.
             </p>
           </div>
 
-          {/* Treasury & Rewards */}
+          {/* Treasury & Token Control */}
           <div>
             <h3 className="text-sm font-bold text-gray-900 mb-1.5 flex items-center gap-2">
               <Vault size={18} weight="regular" className="text-gray-900" />
-              Treasury Management
+              Token Supply Control
             </h3>
             <p>
-              Revenue from pool fees and Pump.fun creator fees funds acquisitions. 70% active deployment, 30% tax reserve. All transactions are transparent with real-time treasury visibility.
+              Platform launches BNB-based token with controlled supply. Revenue from strategic token sales and trading fees funds card acquisitions. 70% active deployment, 30% tax reserve.
             </p>
           </div>
 
@@ -72,7 +72,7 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
               Earn Rewards
             </h3>
             <p>
-              Pool participants receive proportional rewards through card distribution or profit sharing. Benefit directly from successful acquisitions and market appreciation.
+              Pool participants receive proportional rewards through card distribution or BNB profit sharing. Benefit directly from successful acquisitions and market appreciation.
             </p>
           </div>
         </div>

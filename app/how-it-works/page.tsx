@@ -50,9 +50,9 @@ export default function HowItWorks() {
           
           <div className="space-y-8">
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Step 1: Pool Participation</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Step 1: Pool Participation (Free)</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-2">
-                Browse our comprehensive card catalog and request cards you believe should be strategically acquired. Join an acquisition pool by paying a one-time entry fee of 0.05 SOL per card. This fee structure funds platform operations, development, and serves as the primary revenue mechanism for sustainable growth.
+                Browse our comprehensive card catalog and request cards you believe should be strategically acquired. Join an acquisition pool with no entry fees - participation is completely free. This zero-barrier approach maximizes community engagement and democratizes access to strategic card acquisition.
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Pool participants are recorded on-chain with full transparency. Your participation grants you proportional rights to future reward distributions based on the acquisition success of your selected card.
@@ -72,24 +72,24 @@ export default function HowItWorks() {
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-2">Step 3: Treasury-Funded Acquisition</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-2">
-                All card purchases are executed using capital from our treasury wallet. The treasury maintains a 30% capital reserve for operational security while deploying 70% toward active acquisitions. Treasury balance is publicly visible on the Strategy page with real-time updates every 30 seconds via Helius RPC integration.
+                All card purchases are executed using capital from our treasury wallet funded by BNB. The treasury maintains a 30% capital reserve for operational security while deploying 70% toward active acquisitions. Treasury balance is publicly visible on the Strategy page for complete transparency.
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Acquisition strategy targets 80-90% supply control of each card through systematic market purchasing, creating significant positioning and influence over card availability and pricing dynamics.
+                Acquisition strategy focuses on generating sustainable fees through strategic market positioning, creating long-term value for all platform participants.
               </p>
             </div>
 
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-2">Step 4: Participant Rewards & Distribution</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-2">
-                Upon successful acquisition and achievement of target supply control, pool participants receive proportional rewards through one of two distribution mechanisms:
+                Upon successful acquisition, pool participants receive proportional rewards through one of two distribution mechanisms:
               </p>
               <ul className="text-sm text-gray-700 space-y-2 ml-4">
                 <li className="leading-relaxed">
                   <span className="font-semibold">Card Distribution:</span> Participants receive a proportional share of the acquired card inventory based on their pool participation percentage. Cards are distributed according to participant wallet addresses with transparent allocation tracking.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Profit Distribution:</span> Alternative reward structure distributes profits generated from market appreciation and strategic sales. Participants receive SOL-denominated rewards proportional to their pool stake, providing liquidity without requiring physical card distribution.
+                  <span className="font-semibold">Profit Distribution:</span> Alternative reward structure distributes profits generated from market appreciation and strategic sales. Participants receive BNB-denominated rewards proportional to their pool stake, providing liquidity without requiring physical card distribution.
                 </li>
               </ul>
               <p className="text-sm text-gray-600 leading-relaxed mt-2">
@@ -105,22 +105,22 @@ export default function HowItWorks() {
           
           <div className="space-y-6">
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Revenue Model</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Revenue Model: Token Supply Control</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-3">
-                The platform operates on a dual revenue model combining entry fees with market appreciation:
+                The platform generates capital for card acquisitions through strategic control of our project token supply:
               </p>
               <ul className="text-sm text-gray-700 space-y-2 ml-4">
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Pool Entry Fees:</span> 0.05 SOL per card request provides immediate operational capital. These fees fund platform development, infrastructure costs, market research, and strategic planning. Entry fees are non-refundable and represent the participant's commitment to the acquisition strategy.
+                  <span className="font-semibold">Platform Token Launch:</span> The project launches its own BNB-based token to fund operations and card acquisitions. This token represents participation in the platform's ecosystem and growth.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Creator Fees (Pump.fun):</span> Platform generates additional revenue through creator fees from Pump.fun token launches. These fees provide supplementary capital that enhances treasury reserves and accelerates acquisition capabilities. Creator fee revenue is transparently tracked and allocated according to the same treasury management principles.
+                  <span className="font-semibold">Controlled Token Supply:</span> Platform strategically controls a significant portion of the token supply. This supply control enables sustainable revenue generation through measured token sales and liquidity provision, ensuring long-term operational funding.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Market Value Appreciation:</span> As the platform achieves 80-90% supply control, artificial scarcity drives market price appreciation. Controlled supply creates favorable conditions for value growth, benefiting all stakeholders including pool participants.
+                  <span className="font-semibold">Trading Fee Revenue:</span> Token trading activities generate fees that directly fund the treasury. These fees provide continuous operational capital while maintaining healthy market liquidity for token holders.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Strategic Sales:</span> Selective card sales at optimal market conditions generate additional revenue while maintaining majority supply control. Sales proceeds are reinvested into treasury for continued acquisition activities.
+                  <span className="font-semibold">Strategic Token Sales:</span> Controlled portions of platform-held token supply are sold at optimal market conditions to generate BNB revenue. This revenue is converted to fiat and deployed for card acquisitions, creating tangible value backing for token holders.
                 </li>
               </ul>
             </div>
@@ -132,16 +132,16 @@ export default function HowItWorks() {
               </p>
               <ul className="text-sm text-gray-700 space-y-2 ml-4">
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Revenue Collection:</span> Platform revenue comprises two primary streams: pool entry fees (0.05 SOL per card request) and Pump.fun creator fees from token launches. Both revenue sources are collected in the treasury wallet where they accumulate as liquid cryptocurrency assets. Treasury balance is publicly visible in real-time, providing complete transparency into platform capital reserves and revenue generation.
+                  <span className="font-semibold">Revenue Collection from Token Supply:</span> Platform revenue is generated through controlled token supply management and trading fees, collected in the treasury wallet where it accumulates as BNB. Treasury balance is publicly visible in real-time, providing complete transparency into platform capital reserves and revenue generation from token activities.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Fiat Conversion Process:</span> To facilitate physical card acquisitions from traditional marketplaces (eBay, TCGPlayer, private sales), treasury SOL holdings are systematically converted to fiat currency (USD) through regulated exchanges. This conversion enables direct purchasing power in the Pokemon card market while maintaining regulatory compliance.
+                  <span className="font-semibold">Fiat Conversion Process:</span> To facilitate physical card acquisitions from traditional marketplaces (eBay, TCGPlayer, private sales), treasury BNB holdings are systematically converted to fiat currency (USD) through regulated exchanges. This conversion enables direct purchasing power in the Pokemon card market while maintaining regulatory compliance.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">70% Active Buying Power:</span> After fiat conversion, 70% of treasury capital is deployed toward strategic card acquisitions. This majority allocation maximizes acquisition velocity and ensures aggressive pursuit of supply control targets while maintaining prudent capital management practices.
+                  <span className="font-semibold">70% Active Buying Power:</span> After fiat conversion, 70% of treasury capital is deployed toward strategic card acquisitions. This majority allocation maximizes acquisition velocity and ensures aggressive pursuit of targets while maintaining prudent capital management practices.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">30% Capital Tax Reserve:</span> A mandatory 30% allocation is reserved specifically for capital gains tax obligations, regulatory compliance costs, and income tax requirements. This conservative tax provisioning ensures full regulatory compliance, prevents unexpected tax liabilities, and maintains platform operational legality. The 30% reserve represents our commitment to sustainable, compliant long-term operations.
+                  <span className="font-semibold">30% Capital Tax Reserve:</span> A mandatory 30% allocation is reserved specifically for capital gains tax obligations, regulatory compliance costs, and income tax requirements. This conservative tax provisioning ensures full regulatory compliance, prevents unexpected tax liabilities, and maintains platform operational legality.
                 </li>
               </ul>
               <p className="text-sm text-gray-600 leading-relaxed mt-3">
@@ -166,14 +166,14 @@ export default function HowItWorks() {
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-2">Complete Transparency</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Real-time treasury visibility via public wallet address with 30-second refresh intervals. All transactions recorded on-chain with full audit trail. Acquisition progress tracked publicly on Strategy page with comprehensive holdings disclosure.
+                Real-time treasury visibility via public wallet address. All transactions recorded on-chain with full audit trail. Acquisition progress tracked publicly on Strategy page with comprehensive holdings disclosure.
               </p>
             </div>
 
             <div>
-              <h3 className="text-base font-bold text-gray-900 mb-2">Market Positioning</h3>
+              <h3 className="text-base font-bold text-gray-900 mb-2">Fee Generation Focus</h3>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Strategic accumulation of 80-90% supply creates dominant market position. Controlled supply enables favorable pricing dynamics, reduces market volatility, and positions platform as primary liquidity provider for rare cards.
+                Strategic positioning enables sustainable fee generation through market activities. Fee structures designed to provide ongoing revenue while maintaining accessible participant costs and platform growth.
               </p>
             </div>
 

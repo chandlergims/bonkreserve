@@ -18,18 +18,35 @@ export default function AddCard() {
   const [loading, setLoading] = useState(false);
   const [editMessage, setEditMessage] = useState('');
   
+  // Treasury/BNB balance state
+  const [bnbBalance, setBnbBalance] = useState('0.00');
+  const [bnbMessage, setBnbMessage] = useState('');
+  
   // Bulk card import state
   const [bulkCardsJson, setBulkCardsJson] = useState('');
   const [bulkImportMessage, setBulkImportMessage] = useState('');
   const [bulkImporting, setBulkImporting] = useState(false);
 
-  // Load existing holdings on mount
+  // Load existing holdings and BNB balance on mount
   useEffect(() => {
-    const loadHoldings = async () => {
+    const loadData = async () => {
       const holdings = await getHoldings();
       setExistingHoldings(holdings);
+      
+      // Load BNB balance from Firebase
+      try {
+        const { db } = await import('@/lib/firebase');
+        const { doc, getDoc } = await import('firebase/firestore');
+        const treasuryRef = doc(db, 'treasury', 'balance');
+        const treasuryDoc = await getDoc(treasuryRef);
+        if (treasuryDoc.exists()) {
+          setBnbBalance(treasuryDoc.data().bnb || '0.00');
+        }
+      } catch (error) {
+        console.error('Error loading BNB balance:', error);
+      }
     };
-    loadHoldings();
+    loadData();
   }, []);
 
   // Refresh holdings after adding
@@ -162,6 +179,49 @@ export default function AddCard() {
       
       <div className="max-w-6xl mx-auto p-8">
         <h1 className="text-3xl font-bold mb-6">Manage Holdings</h1>
+
+        {/* BNB Balance Editor */}
+        <div className="mb-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-300 rounded-lg p-6">
+          <h2 className="text-2xl font-bold mb-4 text-yellow-800">💰 Available Capital (BNB)</h2>
+          <div className="flex items-end gap-4">
+            <div className="flex-1">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">BNB Balance:</label>
+              <input
+                type="number"
+                step="0.01"
+                value={bnbBalance}
+                onChange={(e) => setBnbBalance(e.target.value)}
+                className="w-full p-3 border-2 border-yellow-300 rounded-lg text-lg font-bold"
+                placeholder="0.00"
+              />
+            </div>
+            <button
+              onClick={async () => {
+                setBnbMessage('');
+                try {
+                  const { db } = await import('@/lib/firebase');
+                  const { doc, setDoc } = await import('firebase/firestore');
+                  const treasuryRef = doc(db, 'treasury', 'balance');
+                  await setDoc(treasuryRef, { bnb: bnbBalance, lastUpdated: new Date().toISOString() });
+                  setBnbMessage('✅ BNB balance updated! Refresh Strategy page to see changes.');
+                } catch (error) {
+                  setBnbMessage(`❌ Error: ${error instanceof Error ? error.message : 'Failed to update'}`);
+                }
+              }}
+              className="px-6 py-3 bg-yellow-600 text-white rounded-lg font-bold hover:bg-yellow-700 transition-colors cursor-pointer"
+            >
+              Save BNB Balance
+            </button>
+          </div>
+          {bnbMessage && (
+            <div className={`mt-3 p-3 rounded ${bnbMessage.includes('✅') ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+              {bnbMessage}
+            </div>
+          )}
+          <p className="text-sm text-gray-600 mt-3">
+            This value will be displayed as "Available Capital" on the Strategy page.
+          </p>
+        </div>
 
         {/* Edit Existing Holdings Section */}
         {existingHoldings.length > 0 && (

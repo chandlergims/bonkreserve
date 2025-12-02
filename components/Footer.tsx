@@ -27,14 +27,14 @@ export default function Footer() {
           {/* Center - Copyright */}
           <div className="absolute left-1/2 -translate-x-1/2">
             <p className="text-xs text-gray-600 font-bold">
-              © 2025 PokeStrategy. All Rights Reserved.
+              © 2025 BNBMON. All Rights Reserved.
             </p>
           </div>
 
           {/* Right side - X Logo */}
           <div className="flex items-center">
             <a
-              href="https://x.com/pokestrategyio"
+              href="https://x.com/bnbmonxyz"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:opacity-70 transition-opacity cursor-pointer"
