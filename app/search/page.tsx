@@ -31,6 +31,8 @@ export default function SearchCards() {
   const [selectedCard, setSelectedCard] = useState<PokemonCard | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
+  const [walletAddress, setWalletAddress] = useState('');
+  const [walletError, setWalletError] = useState('');
   
   // Real-time notifications
   const [realtimeNotification, setRealtimeNotification] = useState<string>('');
@@ -173,62 +175,81 @@ export default function SearchCards() {
   const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean))).sort();
 
   const handleOpenRequestModal = async (card: PokemonCard) => {
-    if (!userId) {
-      setError('Please wait while we set up your session');
-      setTimeout(() => setError(''), 3000);
-      return;
-    }
-    
-    // Check if user has already joined this pool
-    try {
-      const { db } = await import('@/lib/firebase');
-      const { doc, getDoc } = await import('firebase/firestore');
-      
-      const poolRef = doc(db, 'communityRequests', card.id);
-      const poolDoc = await getDoc(poolRef);
-      
-      if (poolDoc.exists()) {
-        const data = poolDoc.data();
-        // Check requestedBy field (the actual field in Firestore)
-        if (data.requestedBy?.includes(userId)) {
-          setError('You have already joined this pool!');
-          setTimeout(() => setError(''), 3000);
-          return;
-        }
-      }
-    } catch (err) {
-      console.error('Error checking pool membership:', err);
-    }
-    
     setSelectedCard(card);
     setShowRequestModal(true);
     setSuccessMessage('');
+    setWalletAddress('');
+    setWalletError('');
+  };
+
+  // Validate Solana wallet address
+  const validateSolanaAddress = (address: string): boolean => {
+    // Solana addresses are base58 encoded and typically 32-44 characters
+    const solanaAddressRegex = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+    return solanaAddressRegex.test(address.trim());
   };
 
   const handleConfirmRequest = async () => {
-    if (!selectedCard || !userId) return;
+    if (!selectedCard) return;
+
+    // Validate wallet address
+    const trimmedAddress = walletAddress.trim();
+    if (!trimmedAddress) {
+      setWalletError('Please enter your Solana wallet address');
+      return;
+    }
+
+    if (!validateSolanaAddress(trimmedAddress)) {
+      setWalletError('Invalid Solana wallet address format');
+      return;
+    }
 
     setIsProcessing(true);
+    setWalletError('');
     
     try {
-      // Add to community requests (free to join)
+      // Check if this wallet has already joined this pool
+      const { db } = await import('@/lib/firebase');
+      const { collection, query, where, getDocs } = await import('firebase/firestore');
+      
+      const requestsRef = collection(db, 'communityRequests');
+      const q = query(requestsRef, where('cardId', '==', selectedCard.id));
+      const querySnapshot = await getDocs(q);
+      
+      if (!querySnapshot.empty) {
+        const existingData = querySnapshot.docs[0].data();
+        const requestedBy = existingData.requestedBy || [];
+        
+        if (requestedBy.includes(trimmedAddress)) {
+          setWalletError('This wallet address has already joined this pool');
+          setIsProcessing(false);
+          return;
+        }
+      }
+
+      // Add to community requests with the wallet address
       const result = await addCommunityRequest(
         selectedCard.id,
         selectedCard,
-        userId
+        trimmedAddress
       );
       
       if (result.success) {
         setRequestedCards(prev => new Set(prev).add(selectedCard.id));
-        setSuccessMessage('Successfully joined the pool!');
+        setSuccessMessage(`Successfully joined the pool with wallet ${trimmedAddress.slice(0, 4)}...${trimmedAddress.slice(-4)}!`);
         setShowRequestModal(false);
+        setWalletAddress('');
         setTimeout(() => setSuccessMessage(''), 5000);
       } else {
-        setShowRequestModal(false);
+        if (result.message) {
+          setWalletError(result.message);
+        } else {
+          setShowRequestModal(false);
+        }
       }
     } catch (error) {
       console.error('Error processing request:', error);
-      setShowRequestModal(false);
+      setWalletError('Failed to join pool. Please try again.');
     } finally {
       setIsProcessing(false);
     }
@@ -483,25 +504,55 @@ export default function SearchCards() {
           onClose={() => setShowRequestModal(false)} 
           onSubmit={handleConfirmRequest}
           title="Join Acquisition Pool"
-          subtitle="Once the card is fully acquired, all pool members will be rewarded with a share of the total supply."
+          subtitle="Enter your Solana wallet address to join this pool and receive rewards when the card is acquired."
           buttonText="Join Pool"
           processingText="Processing..."
           isCreating={isProcessing}
         >
           {selectedCard && (
-            <div className="flex gap-3">
-              <img 
-                src={selectedCard.images.small} 
-                alt={selectedCard.name}
-                className="w-20 h-auto rounded-lg shadow-sm"
-              />
-              <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-sm text-gray-900 mb-1 truncate">{selectedCard.name}</h3>
-                <p className="text-xs text-gray-600 truncate">{selectedCard.set.name}</p>
-                {selectedCard.rarity && (
-                  <span className="inline-block mt-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs font-semibold">
-                    {selectedCard.rarity}
-                  </span>
+            <div className="space-y-4">
+              <div className="flex gap-3">
+                <img 
+                  src={selectedCard.images.small} 
+                  alt={selectedCard.name}
+                  className="w-20 h-auto rounded-lg shadow-sm"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-sm text-gray-900 mb-1 truncate">{selectedCard.name}</h3>
+                  <p className="text-xs text-gray-600 truncate">{selectedCard.set.name}</p>
+                  {selectedCard.rarity && (
+                    <span className="inline-block mt-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded text-xs font-semibold">
+                      {selectedCard.rarity}
+                    </span>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Solana Wallet Address *
+                </label>
+                <input
+                  type="text"
+                  value={walletAddress}
+                  onChange={(e) => {
+                    setWalletAddress(e.target.value);
+                    setWalletError('');
+                  }}
+                  placeholder="Enter your Solana wallet address (e.g., 7xKXtg2CW87d...)"
+                  className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 ${
+                    walletError 
+                      ? 'border-red-300 focus:ring-red-500 focus:border-red-500' 
+                      : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                  }`}
+                />
+                {walletError && (
+                  <p className="mt-1 text-xs text-red-600">{walletError}</p>
+                )}
+                {!walletError && (
+                  <p className="mt-1 text-xs text-gray-500">
+                    This wallet will receive rewards when the pool acquisition is complete
+                  </p>
                 )}
               </div>
             </div>
