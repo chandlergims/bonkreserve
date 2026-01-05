@@ -119,7 +119,7 @@ export default function Strategy() {
           <div className="bg-white rounded-lg p-4 border border-gray-200">
             <div className="text-xs font-medium text-gray-500 mb-1">Available Capital</div>
             <div className="text-2xl font-bold text-gray-900">
-              {treasuryWalletBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} BNB
+              {treasuryWalletBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })} USD1
             </div>
             <div className="text-xs text-gray-400 mt-1">Editable in add page</div>
           </div>

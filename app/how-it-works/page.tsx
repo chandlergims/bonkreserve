@@ -72,7 +72,7 @@ export default function HowItWorks() {
             <div>
               <h3 className="text-base font-bold text-gray-900 mb-2">Step 3: Treasury-Funded Acquisition</h3>
               <p className="text-sm text-gray-700 leading-relaxed mb-2">
-                All card purchases are executed using capital from our treasury wallet funded by BNB. The treasury maintains a 30% capital reserve for operational security while deploying 70% toward active acquisitions. Treasury balance is publicly visible on the Strategy page for complete transparency.
+                All card purchases are executed using capital from our treasury wallet funded by USD1. The treasury maintains a 30% capital reserve for operational security while deploying 70% toward active acquisitions. Treasury balance is publicly visible on the Strategy page for complete transparency.
               </p>
               <p className="text-sm text-gray-600 leading-relaxed">
                 Acquisition strategy focuses on generating sustainable fees through strategic market positioning, creating long-term value for all platform participants.
@@ -89,7 +89,7 @@ export default function HowItWorks() {
                   <span className="font-semibold">Card Distribution:</span> Participants receive a proportional share of the acquired card inventory based on their pool participation percentage. Cards are distributed according to participant wallet addresses with transparent allocation tracking.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Profit Distribution:</span> Alternative reward structure distributes profits generated from market appreciation and strategic sales. Participants receive BNB-denominated rewards proportional to their pool stake, providing liquidity without requiring physical card distribution.
+                  <span className="font-semibold">Profit Distribution:</span> Alternative reward structure distributes profits generated from market appreciation and strategic sales. Participants receive USD1-denominated rewards proportional to their pool stake, providing liquidity without requiring physical card distribution.
                 </li>
               </ul>
               <p className="text-sm text-gray-600 leading-relaxed mt-2">
@@ -111,7 +111,7 @@ export default function HowItWorks() {
               </p>
               <ul className="text-sm text-gray-700 space-y-2 ml-4">
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Platform Token Launch:</span> The project launches its own BNB-based token to fund operations and card acquisitions. This token represents participation in the platform's ecosystem and growth.
+                  <span className="font-semibold">Platform Token Launch:</span> The project launches its own USD1-based token to fund operations and card acquisitions. This token represents participation in the platform's ecosystem and growth.
                 </li>
                 <li className="leading-relaxed">
                   <span className="font-semibold">Controlled Token Supply:</span> Platform strategically controls a significant portion of the token supply. This supply control enables sustainable revenue generation through measured token sales and liquidity provision, ensuring long-term operational funding.
@@ -120,7 +120,7 @@ export default function HowItWorks() {
                   <span className="font-semibold">Trading Fee Revenue:</span> Token trading activities generate fees that directly fund the treasury. These fees provide continuous operational capital while maintaining healthy market liquidity for token holders.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Strategic Token Sales:</span> Controlled portions of platform-held token supply are sold at optimal market conditions to generate BNB revenue. This revenue is converted to fiat and deployed for card acquisitions, creating tangible value backing for token holders.
+                  <span className="font-semibold">Strategic Token Sales:</span> Controlled portions of platform-held token supply are sold at optimal market conditions to generate USD1 revenue. This revenue is converted to fiat and deployed for card acquisitions, creating tangible value backing for token holders.
                 </li>
               </ul>
             </div>
@@ -132,10 +132,10 @@ export default function HowItWorks() {
               </p>
               <ul className="text-sm text-gray-700 space-y-2 ml-4">
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Revenue Collection from Token Supply:</span> Platform revenue is generated through controlled token supply management and trading fees, collected in the treasury wallet where it accumulates as BNB. Treasury balance is publicly visible in real-time, providing complete transparency into platform capital reserves and revenue generation from token activities.
+                  <span className="font-semibold">Revenue Collection from Token Supply:</span> Platform revenue is generated through controlled token supply management and trading fees, collected in the treasury wallet where it accumulates as USD1. Treasury balance is publicly visible in real-time, providing complete transparency into platform capital reserves and revenue generation from token activities.
                 </li>
                 <li className="leading-relaxed">
-                  <span className="font-semibold">Fiat Conversion Process:</span> To facilitate physical card acquisitions from traditional marketplaces (eBay, TCGPlayer, private sales), treasury BNB holdings are systematically converted to fiat currency (USD) through regulated exchanges. This conversion enables direct purchasing power in the Pokemon card market while maintaining regulatory compliance.
+                  <span className="font-semibold">Fiat Conversion Process:</span> To facilitate physical card acquisitions from traditional marketplaces (eBay, TCGPlayer, private sales), treasury USD1 holdings are systematically converted to fiat currency (USD) through regulated exchanges. This conversion enables direct purchasing power in the Pokemon card market while maintaining regulatory compliance.
                 </li>
                 <li className="leading-relaxed">
                   <span className="font-semibold">70% Active Buying Power:</span> After fiat conversion, 70% of treasury capital is deployed toward strategic card acquisitions. This majority allocation maximizes acquisition velocity and ensures aggressive pursuit of targets while maintaining prudent capital management practices.

@@ -50,7 +50,7 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
               Strategic Acquisition
             </h3>
             <p>
-              Once a pool reaches 50 participants, it becomes an Active Target. We systematically acquire cards using BNB treasury funds, creating market positioning and value for all participants.
+              Once a pool reaches 50 participants, it becomes an Active Target. We systematically acquire cards using USD1 treasury funds, creating market positioning and value for all participants.
             </p>
           </div>
 
@@ -61,7 +61,7 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
               Token Supply Control
             </h3>
             <p>
-              Platform launches BNB-based token with controlled supply. Revenue from strategic token sales and trading fees funds card acquisitions. 70% active deployment, 30% tax reserve.
+              Platform launches USD1-based token with controlled supply. Revenue from strategic token sales and trading fees funds card acquisitions. 70% active deployment, 30% tax reserve.
             </p>
           </div>
 
@@ -72,7 +72,7 @@ export default function HowItWorksModal({ isOpen, onClose }: HowItWorksModalProp
               Earn Rewards
             </h3>
             <p>
-              Pool participants receive proportional rewards through card distribution or BNB profit sharing. Benefit directly from successful acquisitions and market appreciation.
+              Pool participants receive proportional rewards through card distribution or USD1 profit sharing. Benefit directly from successful acquisitions and market appreciation.
             </p>
           </div>
         </div>

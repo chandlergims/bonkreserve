@@ -5,12 +5,12 @@ import Navbar from '@/components/Navbar';
 import { searchCards } from '@/lib/services/pokemonService';
 import { PokemonCard } from '@/types/pokemon';
 import { addCommunityRequest, hasUserRequested } from '@/lib/services/communityRequestService';
-import { useAccount } from 'wagmi';
 import { MagnifyingGlass, Spinner, Plus, Check } from '@phosphor-icons/react';
 import Modal from '@/components/Modal';
 
 export default function SearchCards() {
-  const { address, isConnected } = useAccount();
+  // Use session ID instead of wallet address
+  const [userId, setUserId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [cards, setCards] = useState<PokemonCard[]>([]);
   const [allCards, setAllCards] = useState<PokemonCard[]>([]); // Store all cards
@@ -34,6 +34,16 @@ export default function SearchCards() {
   
   // Real-time notifications
   const [realtimeNotification, setRealtimeNotification] = useState<string>('');
+
+  // Generate or retrieve user ID on mount
+  useEffect(() => {
+    let id = localStorage.getItem('guestUserId');
+    if (!id) {
+      id = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      localStorage.setItem('guestUserId', id);
+    }
+    setUserId(id);
+  }, []);
 
   // Load all cards from Firebase on mount
   useEffect(() => {
@@ -65,6 +75,8 @@ export default function SearchCards() {
 
   // Real-time listener for pool joins - runs for ALL users
   useEffect(() => {
+    if (!userId) return;
+    
     const setupRealtimeListener = async () => {
       try {
         const { db } = await import('@/lib/firebase');
@@ -74,12 +86,12 @@ export default function SearchCards() {
         
         // Subscribe to real-time updates
         const unsubscribe = onSnapshot(poolsRef, (snapshot) => {
-          // Update requestedCards state ONLY for authenticated users
-          if (isConnected && address) {
+          // Update requestedCards state for current user
+          if (userId) {
             const userPools = new Set<string>();
             snapshot.docs.forEach(doc => {
               const data = doc.data();
-              if (data.requestedBy?.includes(address)) {
+              if (data.requestedBy?.includes(userId)) {
                 // Use cardId (the Pokemon card ID) not doc.id (Firestore document ID)
                 userPools.add(data.cardId);
               }
@@ -129,7 +141,7 @@ export default function SearchCards() {
     return () => {
       unsubscribeProm?.then(unsub => unsub?.());
     };
-  }, [isConnected, address]);
+  }, [userId]);
 
   // Apply filters whenever cards, rarity, or price sort changes
   useEffect(() => {
@@ -161,8 +173,8 @@ export default function SearchCards() {
   const rarities = Array.from(new Set(cards.map(card => card.rarity).filter(Boolean))).sort();
 
   const handleOpenRequestModal = async (card: PokemonCard) => {
-    if (!isConnected || !address) {
-      setError('Please connect your wallet to request cards');
+    if (!userId) {
+      setError('Please wait while we set up your session');
       setTimeout(() => setError(''), 3000);
       return;
     }
@@ -178,7 +190,7 @@ export default function SearchCards() {
       if (poolDoc.exists()) {
         const data = poolDoc.data();
         // Check requestedBy field (the actual field in Firestore)
-        if (data.requestedBy?.includes(address)) {
+        if (data.requestedBy?.includes(userId)) {
           setError('You have already joined this pool!');
           setTimeout(() => setError(''), 3000);
           return;
@@ -194,7 +206,7 @@ export default function SearchCards() {
   };
 
   const handleConfirmRequest = async () => {
-    if (!selectedCard || !address) return;
+    if (!selectedCard || !userId) return;
 
     setIsProcessing(true);
     
@@ -203,7 +215,7 @@ export default function SearchCards() {
       const result = await addCommunityRequest(
         selectedCard.id,
         selectedCard,
-        address
+        userId
       );
       
       if (result.success) {
