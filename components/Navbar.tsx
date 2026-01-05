@@ -14,9 +14,9 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <img 
-                src="/Arena (23).png" 
+                src="/Bonk_Reserve_4.png" 
                 alt="Bonk Reserve" 
-                className="h-16 sm:h-18 md:h-20 w-auto select-none"
+                className="h-10 sm:h-12 md:h-14 w-auto select-none"
               />
             </Link>
           </div>

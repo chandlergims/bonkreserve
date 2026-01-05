@@ -45,10 +45,10 @@ export default function RootLayout({
       <head>
         <title>Bonk Reserve - Strategic Pokemon Card Acquisition</title>
         <meta name="description" content="Bonk Reserve - Join acquisition pools to strategically acquire Pokemon card supply through community-driven coordination" />
-        <link rel="icon" href="/Arena (23).png" />
+        <link rel="icon" href="/Bonk_Reserve_1000_x_1000_px_3.png" />
         <meta property="og:title" content="Bonk Reserve - Strategic Pokemon Card Acquisition" />
         <meta property="og:description" content="Join acquisition pools to strategically acquire Pokemon card supply through community-driven coordination" />
-        <meta property="og:image" content="/Arena (23).png" />
+        <meta property="og:image" content="/Bonk_Reserve_1000_x_1000_px_3.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

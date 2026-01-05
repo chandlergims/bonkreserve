@@ -85,6 +85,7 @@ export default function SearchCards() {
         const { collection, onSnapshot } = await import('firebase/firestore');
         
         const poolsRef = collection(db, 'communityRequests');
+        let isInitialLoad = true;
         
         // Subscribe to real-time updates
         const unsubscribe = onSnapshot(poolsRef, (snapshot) => {
@@ -101,35 +102,41 @@ export default function SearchCards() {
             setRequestedCards(userPools);
           }
           
-          // Show notifications for ALL users (both authenticated and non-authenticated)
-          snapshot.docChanges().forEach((change) => {
-            if (change.type === 'added' || change.type === 'modified') {
-              const data = change.doc.data();
-              const cardData = data.cardData;
-              const requesters = data.requestedBy || [];
-              const newCount = requesters.length;
-              
-              // Helper function to shorten address
-              const shortenAddress = (address: string) => {
-                if (!address) return '';
-                return `${address.slice(0, 4)}...${address.slice(-4)}`;
-              };
-              
-              // Only show notification if there are requesters (avoid initial load spam)
-              if (newCount > 0 && change.type === 'modified') {
-                // Get the most recent joiner (last in array)
-                const latestJoiner = requesters[requesters.length - 1];
-                const shortAddr = shortenAddress(latestJoiner);
-                setRealtimeNotification(`${shortAddr} joined the ${cardData.name} pool! (${newCount} members)`);
-                setTimeout(() => setRealtimeNotification(''), 5000);
-              } else if (change.type === 'added' && newCount > 0) {
-                const firstJoiner = requesters[0];
-                const shortAddr = shortenAddress(firstJoiner);
-                setRealtimeNotification(`${shortAddr} created pool for ${cardData.name}! (${newCount} member)`);
-                setTimeout(() => setRealtimeNotification(''), 5000);
+          // Skip notifications on initial load, only show for real-time changes
+          if (!isInitialLoad) {
+            // Show notifications for ALL users (both authenticated and non-authenticated)
+            snapshot.docChanges().forEach((change) => {
+              if (change.type === 'added' || change.type === 'modified') {
+                const data = change.doc.data();
+                const cardData = data.cardData;
+                const requesters = data.requestedBy || [];
+                const newCount = requesters.length;
+                
+                // Helper function to shorten address
+                const shortenAddress = (address: string) => {
+                  if (!address) return '';
+                  return `${address.slice(0, 4)}...${address.slice(-4)}`;
+                };
+                
+                // Only show notification if there are requesters
+                if (newCount > 0 && change.type === 'modified') {
+                  // Get the most recent joiner (last in array)
+                  const latestJoiner = requesters[requesters.length - 1];
+                  const shortAddr = shortenAddress(latestJoiner);
+                  setRealtimeNotification(`${shortAddr} joined the ${cardData.name} pool! (${newCount} members)`);
+                  setTimeout(() => setRealtimeNotification(''), 5000);
+                } else if (change.type === 'added' && newCount > 0) {
+                  const firstJoiner = requesters[0];
+                  const shortAddr = shortenAddress(firstJoiner);
+                  setRealtimeNotification(`${shortAddr} created pool for ${cardData.name}! (${newCount} member)`);
+                  setTimeout(() => setRealtimeNotification(''), 5000);
+                }
               }
-            }
-          });
+            });
+          }
+          
+          // Mark initial load as complete after first snapshot
+          isInitialLoad = false;
         });
         
         return unsubscribe;
