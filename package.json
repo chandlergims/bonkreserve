@@ -14,7 +14,7 @@
     "@tanstack/react-query": "^5.90.11",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^12.6.0",
-    "next": "16.0.3",
+    "next": "^16.1.1",
     "phosphor-react": "^1.4.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
